@@ -30,7 +30,7 @@ class ContactController {
     // Create a new contact
     const { name, email, phone, category_id } = req.body;
 
-    if ((category_id && !isValidUUID(category_id)) || category_id === "null") {
+    if (category_id && !isValidUUID(category_id)) {
       return res.status(400).json({ error: "Invalid category ID" });
     }
 
@@ -48,7 +48,7 @@ class ContactController {
       name,
       email,
       phone,
-      category_id,
+      category_id: category_id || null,
     });
 
     res.status(201).json(contact);
@@ -64,7 +64,7 @@ class ContactController {
 
     const { name, email, phone, category_id } = req.body;
 
-    if ((category_id && !isValidUUID(category_id)) || category_id === "null") {
+    if (category_id && !isValidUUID(category_id)) {
       return res.status(400).json({ error: "Invalid category ID" });
     }
 
@@ -87,7 +87,7 @@ class ContactController {
       name,
       email,
       phone,
-      category_id,
+      category_id: category_id || null,
     });
 
     res.json(contact);
