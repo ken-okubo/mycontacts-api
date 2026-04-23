@@ -2,9 +2,8 @@ const CategoriesRepository = require("../repositories/CategoriesRepository");
 
 class CategoryController {
   async index(req, res) {
-    // Return a list of all categories
-    // const { orderBy } = req.query;
-    // const categories = await CategoriesRepository.findAll(orderBy);
+    const { orderBy } = req.query;
+    const categories = await CategoriesRepository.findAll(orderBy);
 
     res.json(categories);
   }

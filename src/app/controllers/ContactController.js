@@ -1,4 +1,5 @@
 const ContactsRepository = require("../repositories/ContactsRepository");
+const isValidUUID = require("../utils/isValidUUID");
 
 class ContactController {
   async index(req, res) {
@@ -12,6 +13,10 @@ class ContactController {
   async show(req, res) {
     // Return a single contact by ID
     const { id } = req.params;
+    if (!isValidUUID(id)) {
+      return res.status(400).json({ error: "Invalid contact ID" });
+    }
+
     const contact = await ContactsRepository.findById(id);
 
     if (!contact) {
@@ -24,6 +29,10 @@ class ContactController {
   async store(req, res) {
     // Create a new contact
     const { name, email, phone, category_id } = req.body;
+
+    if ((category_id && !isValidUUID(category_id)) || category_id === "null") {
+      return res.status(400).json({ error: "Invalid category ID" });
+    }
 
     if (!name) {
       return res.status(400).json({ error: "Name is required" });
@@ -48,7 +57,16 @@ class ContactController {
   async update(req, res) {
     // Update an existing contact by ID
     const { id } = req.params;
+
+    if (!isValidUUID(id)) {
+      return res.status(400).json({ error: "Invalid contact ID" });
+    }
+
     const { name, email, phone, category_id } = req.body;
+
+    if ((category_id && !isValidUUID(category_id)) || category_id === "null") {
+      return res.status(400).json({ error: "Invalid category ID" });
+    }
 
     const contactExists = await ContactsRepository.findById(id);
 
@@ -78,7 +96,9 @@ class ContactController {
   async delete(req, res) {
     // Delete a contact by ID
     const { id } = req.params;
-
+    if (!isValidUUID(id)) {
+      return res.status(400).json({ error: "Invalid contact ID" });
+    }
     await ContactsRepository.delete(id);
     // 204: no content
     res.sendStatus(204);
