@@ -40,13 +40,16 @@ class ContactController {
 
     const contactExists = await ContactsRepository.findByEmail(email);
 
-    if (contactExists) {
-      return res.status(400).json({ error: "This email is already in use" });
+    if (email) {
+      const contactByEmail = await ContactsRepository.findByEmail(email);
+      if (contactByEmail) {
+        return res.status(400).json({ error: "This email is already in use" });
+      }
     }
 
     const contact = await ContactsRepository.create({
       name,
-      email,
+      email: email || null,
       phone,
       category_id: category_id || null,
     });
@@ -57,35 +60,35 @@ class ContactController {
   async update(req, res) {
     // Update an existing contact by ID
     const { id } = req.params;
+    const { name, email, phone, category_id } = req.body;
 
     if (!isValidUUID(id)) {
       return res.status(400).json({ error: "Invalid contact ID" });
     }
 
-    const { name, email, phone, category_id } = req.body;
-
     if (category_id && !isValidUUID(category_id)) {
       return res.status(400).json({ error: "Invalid category ID" });
-    }
-
-    const contactExists = await ContactsRepository.findById(id);
-
-    if (!contactExists) {
-      return res.status(404).json({ error: "Contact not found" });
     }
 
     if (!name) {
       return res.status(400).json({ error: "Name is required" });
     }
 
-    const contactByEmail = await ContactsRepository.findByEmail(email);
-    if (contactByEmail && contactByEmail.id !== id) {
-      return res.status(400).json({ error: "This email is already in use" });
+    const contactExists = await ContactsRepository.findById(id);
+    if (!contactExists) {
+      return res.status(404).json({ error: "Contact not found" });
+    }
+
+    if (email) {
+      const contactByEmail = await ContactsRepository.findByEmail(email);
+      if (contactByEmail && contactByEmail.id !== id) {
+        return res.status(400).json({ error: "This email is already in use" });
+      }
     }
 
     const contact = await ContactsRepository.update(id, {
       name,
-      email,
+      email: email || null,
       phone,
       category_id: category_id || null,
     });
