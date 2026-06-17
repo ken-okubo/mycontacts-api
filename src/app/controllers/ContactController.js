@@ -38,8 +38,6 @@ class ContactController {
       return res.status(400).json({ error: "Name is required" });
     }
 
-    const contactExists = await ContactsRepository.findByEmail(email);
-
     if (email) {
       const contactByEmail = await ContactsRepository.findByEmail(email);
       if (contactByEmail) {

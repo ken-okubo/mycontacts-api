@@ -6,8 +6,11 @@ export default defineConfig([
 	{
 		files: ['**/*.{js,mjs,cjs}'],
 		plugins: { js },
-		extends: ['airbnb-base'],
+		extends: ['js/recommended'],
 		languageOptions: { globals: globals.node },
+		rules: {
+			'no-unused-vars': ['error', { argsIgnorePattern: '^_', args: 'after-used' }],
+		},
 	},
 	{ files: ['**/*.js'], languageOptions: { sourceType: 'commonjs' } },
 ]);
